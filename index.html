@@ -1,0 +1,132 @@
+<html>
+<head>
+	<!-- 制作：バイザン(@into_vision) -->
+	<title>カウントボタン</title>
+
+	<!-- 画像の先行読み込み -->
+	<link rel="preload" href="./res/button_down.png" as="image">
+	<link rel="preload" href="./res/button_up.png" as="image">
+	<link rel="preload" href="./res/numbers.png" as="image">
+
+	<script>
+		// カウントの最大数
+		var max_count = 99;
+
+		// 押した回数
+		var counter = 0;
+
+		// クリック音
+		var se_click = "./res/click.mp3";
+		// preload to cache
+		new Audio(se_click);
+
+		// ナンバー画像を更新
+		function updateNumber() {
+			var n10 = Math.floor(counter / 10);		// 10の位
+			var n1 = counter - n10 * 10;			// 1の位
+
+			document.getElementById("number_left").style.objectPosition = (n10 * -64) + "px 0px";
+			document.getElementById("number_right").style.objectPosition = (n1 * -64) + "px 0px";
+		}
+
+		// ボタンを押した
+		function mouseDown() {
+			// ボタン画像差し替え
+			document.getElementById("button_main").style.backgroundImage = "url(./res/button_down.png)";
+
+			// カウントアップ
+			counter = Math.min(counter + 1, max_count);
+			updateNumber();
+
+			// 音を鳴らす
+			new Audio(se_click).play();
+		}
+
+		// ボタンを離した
+		function mouseUp() {
+			// ボタン画像差し替え
+			document.getElementById("button_main").style.backgroundImage = "url(./res/button_up.png)";
+		}
+
+		// 初期化
+		function reset() {
+			counter = 0;
+			updateNumber();
+		}
+	</script>
+	<style>
+		body {
+			background-color: green;
+		}
+
+		/* メインボタン */
+		#button_main {
+			background-image: url(./res/button_up.png);
+
+			/* 表示位置 */
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 512px;
+			height: 512px;
+		}
+
+		/* 10の位 */
+		#number_left {
+			/* クリックをスルーさせる */
+			pointer-events: none;
+			user-select: none;
+
+			/* 表示位置 */
+			position: absolute;
+			top: calc(512px - 128px - 64px);
+			left: calc(512px / 2 - 64px);
+			width: 64px;
+			height: 128px;
+
+			/* 切り取り位置 */
+			object-fit: none;
+			object-position: 0px 0px;
+
+		}
+
+		/* 1の位 */
+		#number_right {
+			/* クリックをスルーさせる */
+			pointer-events: none;
+			user-select: none;
+
+			/* 表示位置 */
+			position: absolute;
+			top: calc(512px - 128px - 64px);
+			left: calc(512px / 2);
+			width: 64px;
+			height: 128px;
+
+			/* 切り取り位置 */
+			object-fit: none;
+			object-position: 0px 0px;
+		}
+
+		/* リセットボタン */
+		#button_reset {
+			background-image: url(./res/reset.png);
+
+			/* 表示位置 */
+			position: absolute;
+			top: calc(512px - 64px);
+			left: calc((512px - 128px) / 2);
+			width: 128px;
+			height: 32px;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="button_main" onmousedown="mouseDown()" onmouseup="mouseUp()" onmouseout="mouseUp()"></div>
+	<img id="number_left" src="./res/numbers.png"></img>
+	<img id="number_right" src="./res/numbers.png"></img>
+	<div id="button_reset" onmousedown="reset()"></div>
+</body>
+
+</html>
